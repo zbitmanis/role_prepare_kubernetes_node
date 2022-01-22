@@ -1,0 +1,33 @@
+---
+prepare_kubernetes_node_load_kernel_modules:
+  - name: 'overlay'
+  - name: 'br_netfilter'
+prepare_kubernetes_node_debian_packages:
+  - name: 'vim'
+  - name: 'tmux'
+  - name: 'bash-completion'
+  - name: 'apt-transport-https'
+  - name: 'curl'
+  - name: 'ca-certificates'
+  - name: 'gnupg-agent'
+prepare_kubernetes_node_sysctl_settings: 
+  - name: 'net.bridge.bridge-nf-call-iptables'
+    value: 1
+  - name: 'net.ipv4.ip_forward'
+    value: 1
+  - name: 'net.bridge.bridge-nf-call-ip6tables'
+    value: 1
+prepare_kubernetes_node_apt_repositories:
+  - 'ppa:projectatomic/ppa'  
+prepare_kubernetes_node_install_cri_o: false
+prepare_kubernetes_node_install_docker: true
+prepare_kubernetes_node_cri_o_registries:
+  - 'docker.io'
+  - 'quay.io'
+  - 'registry.fedoraproject.org'
+prepare_kubernetes_node_cri_o_conmon_path: '/usr/bin/conmon'
+prepare_kubernetes_node_kube_version: '1.21.1-00'
+prepare_kubernetes_node_kube_packages:
+  - name: 'kubelet={{ prepare_kubernetes_node_kube_version }}'
+  - name: 'kubectl={{ prepare_kubernetes_node_kube_version }}'
+  - name: 'kubeadm={{ prepare_kubernetes_node_kube_version }}'

@@ -1,0 +1,7 @@
+---
+- name: 'Restart CRI-O service'
+  systemd: 
+    name: 'crio'
+    state: restarted
+  listen: 'restart crio'
+  

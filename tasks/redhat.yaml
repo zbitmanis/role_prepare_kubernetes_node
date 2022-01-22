@@ -1,0 +1,31 @@
+---
+- name: 'Install useful packages'
+  package: 
+    name: '{{ item.name }}'  
+    state: present
+  loop: '{{ k8s_prereq_redhat_packages }}'
+
+- name: 'Tasks dedicated to docker on Redhat'
+  include: redhat_docker.yaml
+  when: k8s_prereq_install_docker 
+
+
+- name: 'Add an Apt signing key for K8s repository'
+  apt_key:
+    url: 'https://packages.cloud.google.com/apt/doc/apt-key.gpg'
+    state: present
+
+- name: 'Add K8s repository'
+  apt_repository:
+    repo: 'deb http://apt.kubernetes.io/ kubernetes-xenial main'
+    filename: '/etc/apt/sources.list.d/kubernetes.list'
+    state: present
+
+- name: 'Install K8s packages required for instalation via kubeadmin'
+  apt:
+    name: '{{ item.name }}'
+    state: present
+  loop:
+    - name: 'kubeadm'
+    - name: 'kubelet'
+    - name: 'kubectl'

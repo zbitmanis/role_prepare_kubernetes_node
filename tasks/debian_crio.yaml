@@ -1,0 +1,23 @@
+---
+- name: 'Add ppa projectatomic repository'
+  apt_repository:
+    repo: '{{ item }}'
+  loop: '{{ prepare_kubernetes_node_apt_repositories}}'
+
+- name: 'Install CRI-O packages'
+  apt:
+    name: 'cri-o-1.15'
+    state: present
+
+- name: 'Deploy CRI-O configuration'
+  template: 
+    src: crio.conf.j2
+    dest: '/etc/crio/crio.conf'
+  notify: 'restart crio' 
+
+- name: 'Start CRI-O service'
+  systemd: 
+    name: 'crio'
+    daemon_reload: true
+    state: started
+    enabled: true

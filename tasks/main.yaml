@@ -1,0 +1,20 @@
+---
+- name: 'Load kernel modules'
+  modprobe: 
+    name: '{{ item.name }}'  
+    state: present
+  loop: '{{ prepare_kubernetes_node_load_kernel_modules }}'
+
+  
+- name: 'Add required sysctl settings'
+  sysctl: 
+    name: '{{ item.name }}'
+    sysctl_file: '{{ item.sysctl_file | default("/etc/sysctl.d/99-kubernetes.conf") }}'
+    value: '{{ item.value| default (1) }}'
+  loop:  '{{  prepare_kubernetes_node_sysctl_settings }}'
+
+- name: 'Debiam tasks'
+  include: debian.yaml
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu' 
+
+
